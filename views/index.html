@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>netcet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font: 13px Helvetica, Arial;
+        }
+        
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+        
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+        
+        #messagesBox {
+            height: 100%;
+            overflow: auto;
+        }
+        
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #messages li {
+            padding: 5px 10px;
+        }
+        
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="messages">
+        <div id="messagesBox">
+
+        </div>
+    </div>
+    <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <!--<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        var userInput = null;
+
+        while (!userInput) {
+            userInput = window.prompt("Enter Your Username ", "");
+        }
+
+        var socket = io();
+        $('form').submit(function() {
+            var message = {
+                "user": userInput,
+                msg: $('#m').val()
+            };
+            socket.emit('chat', message);
+            $('#m').val('');
+            return false;
+        });
+
+        socket.emit('connected', userInput);
+
+        socket.on('chat', function(message) {
+            if (message.user == userInput)
+                $('#messagesBox').append('<div align="right"><li>' + ' < ' + message.msg + '</li></div>');
+            else
+                $('#messagesBox').append('<div><li>' + message.user + ' > ' + message.msg + '</li></div>');
+        });
+
+        socket.on('connected', function(username) {
+            if (username != userInput)
+                $('#messagesBox').append('<div><li>' + ' # ' + username + ' geçerken uğradı.' + '</li></div>');
+        });
+    </script>
+</body>
+
+</html>

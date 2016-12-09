@@ -56,18 +56,25 @@ function getMessageDiv(message,user){
 	var clazz = "", content = "",divMessage = "";
 	if (message.user == userInput){
 		clazz = "onemessage mymessage";
-		content = message.msg;
+		content = replaceURLWithHTMLLinks(message.msg);
 		divMessage = '<div align="right" user="' + message.user + '">' + content + ' [' + message.date + ']' + '</div>';
 	}
 	else{
 		clazz = "onemessage othersmessage";
-		content = message.user + ' > ' + message.msg;
+		content = message.user + ' > ' + replaceURLWithHTMLLinks(message.msg);
 		divMessage = '<div user="' + message.user + '"> [' + message.date + '] ' + content + '</div>';
 	}
 	
 	var divAll = '<div class="' + clazz + '">' + divMessage + '</div>';
 	
 	return divAll;
+}
+
+//source : http://stackoverflow.com/questions/6707476/how-to-find-if-a-text-contains-url-string
+function replaceURLWithHTMLLinks(text)
+{
+	var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
 }
 
 function scroll(){

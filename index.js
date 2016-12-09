@@ -4,7 +4,13 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-
+var defaultPort = 881;
+if(process.argv.indexOf("-port") != -1){
+    var port = process.argv[process.argv.indexOf("-port") + 1];
+	var p = parseInt(port);
+	if(!isNaN(p))
+		defaultPort = p;
+}
 
 var path1 = __dirname + '/views/';
 
@@ -16,6 +22,7 @@ app.get('/', function(req, res) {
 
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 io.on('connection', function(socket) {
     socket.on('chat', function(msg) {
@@ -40,8 +47,9 @@ io.on('connection', function(socket) {
     });
 });
 
-http.listen(881, function() {
-    console.log('listening on *:881');
+
+http.listen(defaultPort, function() {
+    console.log('listening on *:' + defaultPort);
 });
 
 
@@ -54,6 +62,7 @@ function removeUser(username){
 	currentUsers = newUserList;
 	console.log("currentUsers :" + currentUsers);
 }
+
 
 function getDate(){
 	var d = new Date();

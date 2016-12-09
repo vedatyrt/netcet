@@ -30,12 +30,30 @@ io.on('connection', function(socket) {
 			io.emit('error', {"type" :"invalidusername" ,"message": "This username already taken : " + username});
 		}	
     });
+    socket.on('byby', function(username) {
+		console.log(username + " ayrılıyor");
+		if(currentUsers.indexOf(username) != -1){
+			removeUser(username);
+			io.emit('byby', username);
+			console.log(username + " ayrıldı");
+		}
+    });
 });
 
-http.listen(880, function() {
-    console.log('listening on *:880');
+http.listen(881, function() {
+    console.log('listening on *:881');
 });
 
+
+function removeUser(username){
+	var newUserList = new Array;
+	for(var i = 0; i< currentUsers.length; i++){
+		if(currentUsers[i] != username)
+			newUserList.push(currentUsers[i]);
+	}
+	currentUsers = newUserList;
+	console.log("currentUsers :" + currentUsers);
+}
 
 function getDate(){
 	var d = new Date();

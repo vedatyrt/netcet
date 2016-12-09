@@ -1,4 +1,7 @@
 var userInput = null;
+var window_focus = true;
+var notificationStack = new Array;
+var socket = io();
 
 function handleResize() {
 	$("#chatdiv").height($(window).height() - ($("form").height() + 40));
@@ -10,8 +13,6 @@ function getUsername(){
 	}
 	socket.emit('connected', userInput);
 }
-
-var socket = io();
 
 $('form').submit(function() {	
 	if($('#m').val()){
@@ -36,6 +37,12 @@ socket.on('chat', function(message) {
 socket.on('connected', function(username) {
 	if (username != userInput)
 		$('#messagesBox').append('<div><div class="onemessage infomessage" user="'+ username +'">' + ' # ' + username + ' geçerken uğradı.' + '</div></div>');
+	scroll();
+});
+
+socket.on('byby', function(username) {
+	if (username != userInput)
+		$('#messagesBox').append('<div><div class="onemessage infomessage" user="'+ username +'">' + ' # ' + username + ' terketti buraları.' + '</div></div>');
 	scroll();
 });
 
@@ -70,19 +77,8 @@ function scroll(){
     chatdiv.scrollTop(textdiv.outerHeight());
 }
 
-$(function(){
-	handleResize();
-	window.addEventListener("resize", handleResize);
-	getUsername();
-
-	if (Notification.permission !== "granted")
-		Notification.requestPermission();
-	
-});
-
-var notificationStack = new Array;
-
 function notifyUser(message) {
+	
 	if (!Notification) {
 		alert('Desktop notifications not available in your browser. Try Chromium.'); 
 		return;
@@ -92,7 +88,7 @@ function notifyUser(message) {
 		Notification.requestPermission();
 	else {
 		var notification = new Notification('8.80 - ' + message.user, {
-			icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+			icon: '/images/netcetlogo.png',
 			body: message.date + " " + message.msg,
 		});
 
@@ -106,3 +102,27 @@ function notifyUser(message) {
 		notificationStack.push(notification);
 	}
 }
+
+$(function(){
+	handleResize();
+	
+	window.addEventListener("resize", handleResize);
+	
+	window.onblur = function (){
+		window_focus = false;
+	}
+	
+	window.onfocus = function (){
+		window_focus = true;
+	}
+	
+	window.onbeforeunload = function () {
+        socket.emit('byby', userInput);
+    }
+	
+	getUsername();
+
+	if (Notification.permission !== "granted")
+		Notification.requestPermission();
+		
+});

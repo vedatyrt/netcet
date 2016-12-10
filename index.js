@@ -5,11 +5,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var defaultPort = 881;
-if(process.argv.indexOf("-port") != -1){
+if (process.argv.indexOf("-port") != -1) {
     var port = process.argv[process.argv.indexOf("-port") + 1];
-	var p = parseInt(port);
-	if(!isNaN(p))
-		defaultPort = p;
+    var p = parseInt(port);
+    if (!isNaN(p))
+        defaultPort = p;
 }
 
 var path1 = __dirname + '/views/';
@@ -26,48 +26,48 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', function(socket) {
     socket.on('chat', function(msg) {
-		msg.date = getDate();
+        msg.date = getDate();
         io.emit('chat', msg);
     });
     socket.on('connected', function(username) {
-		if(currentUsers.indexOf(username) == -1){
-			currentUsers.push(username);
-			io.emit('connected', username);
-		}else{
-			io.emit('error', {"type" :"invalidusername" ,"message": "This username already taken : " + username});
-		}	
+        if (currentUsers.indexOf(username) == -1) {
+            currentUsers.push(username);
+            io.emit('connected', username);
+        } else {
+            io.emit('error', { "type": "invalidusername", "message": "This username already taken : " + username });
+        }
     });
     socket.on('byby', function(username) {
-		console.log(username + " ayrılıyor");
-		if(currentUsers.indexOf(username) != -1){
-			removeUser(username);
-			io.emit('byby', username);
-			console.log(username + " ayrıldı");
-		}
+        console.log(username + " ayrılıyor");
+        if (currentUsers.indexOf(username) != -1) {
+            removeUser(username);
+            io.emit('byby', username);
+            console.log(username + " ayrıldı");
+        }
     });
 });
 
 
-http.listen(defaultPort, function() {
+http.listen(process.env.PORT || defaultPort, function() {
     console.log('listening on *:' + defaultPort);
 });
 
 
-function removeUser(username){
-	var newUserList = new Array;
-	for(var i = 0; i< currentUsers.length; i++){
-		if(currentUsers[i] != username)
-			newUserList.push(currentUsers[i]);
-	}
-	currentUsers = newUserList;
-	console.log("currentUsers :" + currentUsers);
+function removeUser(username) {
+    var newUserList = new Array;
+    for (var i = 0; i < currentUsers.length; i++) {
+        if (currentUsers[i] != username)
+            newUserList.push(currentUsers[i]);
+    }
+    currentUsers = newUserList;
+    console.log("currentUsers :" + currentUsers);
 }
 
 
-function getDate(){
-	var d = new Date();
-	var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
-	var m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
-	var s = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
-	return h + ":" + m + ":" + s;
+function getDate() {
+    var d = new Date();
+    var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    var m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+    var s = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+    return h + ":" + m + ":" + s;
 }

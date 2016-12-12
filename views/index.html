@@ -1,67 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <title>netçet - 880</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="js/chat.js"></script>
 </head>
 
 <body>
-    <div>
-        <div class="container">
-            <div>
-                NETÇET
-                <button id="btnSettings">Settings</button>
+    <div class="chat_window">
+        <div class="top_menu">
+            <div class="buttons">
+                <div class="button close"></div>
+                <div class="button minimize"></div>
+                <div class="button maximize"></div>
             </div>
-            <div>
-                <div id="chatdiv">
-                    <div id="messagesBox"></div>
-                </div>
+            <div class="title">NetÇet</div>
+        </div>
+        <div class="middle">
+            <ul class="messages"></ul>
+        </div>
+        <div class="bottom_wrapper clearfix">
+            <div class="message_input_wrapper"><input class="message_input" placeholder="Type your message here..." /></div>
+            <div class="send_message">
+                <div class="icon"></div>
+                <div class="text">Send</div>
             </div>
         </div>
-        <form action="">
-            <input id="m" autocomplete="off" /><button>Send</button>
-        </form>
+    </div>
+    <div class="message_template">
+        <li class="message">
+            <div class="avatar"></div>
+            <div class="text_wrapper">
+                <div class="text"></div>
+            </div>
+        </li>
     </div>
 
-    <div id="myModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>Settings</h2>
+    <div class="info_message_template">
+        <li class="message">
+            <div class="text_wrapper">
+                <div class="text"></div>
             </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <p><a href="https://github.com/agtokty/netcet" target="_blank">netçet</a></p>
-            </div>
-        </div>
+        </li>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="js/client.js"></script>
-    <script>
-        var modal = document.getElementById('myModal');
-        var btn = document.getElementById("btnSettings");
-        var span = document.getElementsByClassName("close")[0];
 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 </body>
 
 </html>

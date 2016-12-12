@@ -3,16 +3,65 @@ var window_focus = true;
 var notificationStack = new Array;
 var socket = io();
 
-function handleResize() {
-    $("#chatdiv").height($(window).height() - ($("form").height() + 40));
-}
-
 function getUsername() {
-    while (!userInput) {
-        userInput = window.prompt("Enter Your Username ", "");
-    }
+
+    var cusername = getCookie("username", null);
+
+    if (cusername == null) {
+        while (!userInput) {
+            userInput = window.prompt("Enter Your Username ", "");
+        }
+        setCookie("username", userInput, 7);
+    } else
+        userInput = cusername;
     socket.emit('connected', userInput);
 }
+
+function getCookie(cname, defaultValue) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return defaultValue;
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+$('.send_message').click(function(e) {
+    var messageText = getMessageText();
+    if (messageText) {
+        var message = {
+            "user": userInput,
+            msg: messageText,
+        };
+        socket.emit('chat', message);
+        clearMessageText();
+    }
+    return false;
+});
+
+$('.message_input').keyup(function(e) {
+    if (e.which === 13) {
+        var message = {
+            "user": userInput,
+            msg: getMessageText(),
+        };
+        socket.emit('chat', message);
+        clearMessageText();
+    }
+});
 
 $('form').submit(function() {
     if ($('#m').val()) {
@@ -27,49 +76,59 @@ $('form').submit(function() {
 });
 
 socket.on('chat', function(message) {
-    $('#messagesBox').append(getMessageDiv(message, userInput));
 
-    if (message.user != userInput)
+    //TODO -- MESSAJI EKLE
+    var side = "right";
+    if (message.user != userInput) {
+        side = "left"
         notifyUser(message);
+    }
+
+    var mes = new Message({
+        text: message.msg,
+        message_side: side
+    });
+
+    mes.draw();
     scroll();
 });
 
 socket.on('connected', function(username) {
-    if (username != userInput)
-        $('#messagesBox').append('<div><div class="onemessage infomessage" user="' + username + '">' + ' # ' + username + ' geçerken uğradı.' + '</div></div>');
+    //TODO - xxx kişisi bağlandı
+
+    if (username == userInput)
+        return;
+
+    var info = new Message({
+        text: username + " connected",
+        message_side: "info"
+    });
+
+    info.draw();
     scroll();
 });
 
 socket.on('byby', function(username) {
-    if (username != userInput)
-        $('#messagesBox').append('<div><div class="onemessage infomessage" user="' + username + '">' + ' # ' + username + ' terketti buraları.' + '</div></div>');
+    //    if (username != userInput)
+    //TODO - xxx kişisi kotu gitti
+    if (username == userInput)
+        return;
+
+    var info = new Message({
+        text: username + " disconnected",
+        message_side: "info"
+    });
+
+    info.draw();
     scroll();
 });
 
 socket.on('error', function(err) {
     alert(err.message);
+    //TODO - bilgi mesajı
     //if(err.type = "invalidusername")
     //	getUsername();
 });
-
-function getMessageDiv(message, user) {
-    var clazz = "",
-        content = "",
-        divMessage = "";
-    if (message.user == userInput) {
-        clazz = "onemessage mymessage";
-        content = replaceURLWithHTMLLinks(message.msg);
-        divMessage = '<div align="right" user="' + message.user + '">' + content + ' [' + message.date + ']' + '</div>';
-    } else {
-        clazz = "onemessage othersmessage";
-        content = message.user + ' > ' + replaceURLWithHTMLLinks(message.msg);
-        divMessage = '<div user="' + message.user + '"> [' + message.date + '] ' + content + '</div>';
-    }
-
-    var divAll = '<div class="' + clazz + '">' + divMessage + '</div>';
-
-    return divAll;
-}
 
 //source : http://stackoverflow.com/questions/6707476/how-to-find-if-a-text-contains-url-string
 function replaceURLWithHTMLLinks(text) {
@@ -78,10 +137,9 @@ function replaceURLWithHTMLLinks(text) {
 }
 
 function scroll() {
-    var textdiv = $("#messagesBox");
-    var chatdiv = $("#chatdiv");
-    console.log(textdiv.height());
-    chatdiv.scrollTop(textdiv.outerHeight());
+    //TODO
+    $messages = $('.messages');
+    $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
 }
 
 function notifyUser(message) {
@@ -100,21 +158,34 @@ function notifyUser(message) {
         });
 
         notification.onclick = function() {
-
             window.focus();
             notification.close();
-            for (var i = 0; i < notificationStack.length; i++)
-                notificationStack[i].close();
-            notificationStack = new Array();
+            clearAllNotifications();
         };
         notificationStack.push(notification);
     }
 }
 
-$(function() {
-    handleResize();
+function clearAllNotifications() {
+    if (notificationStack.length > 0) {
+        for (var i = 0; i < notificationStack.length; i++)
+            notificationStack[i].close();
+        notificationStack = new Array();
+    }
+}
 
-    window.addEventListener("resize", handleResize);
+var getMessageText = function() {
+    var $message_input;
+    $message_input = $('.message_input');
+    return $message_input.val();
+};
+
+var clearMessageText = function() {
+    var $message_input = $('.message_input');
+    return $message_input.val("");
+};
+
+$(function() {
 
     window.onblur = function() {
         window_focus = false;
@@ -122,6 +193,7 @@ $(function() {
 
     window.onfocus = function() {
         window_focus = true;
+        clearAllNotifications();
     }
 
     window.onbeforeunload = function() {

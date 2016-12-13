@@ -11,9 +11,10 @@ var Settings = {
 	newMessageAlert : "New Message",
 }
 
-function getUsername() {
-
-    var cusername = getCookie("username", null);
+function getUsername(first) {
+	
+	//if(first)
+	var cusername = getCookie("username", null);
 
     if (cusername == null) {
         while (!userInput) {
@@ -128,10 +129,10 @@ socket.on('byby', function(username) {
 });
 
 socket.on('error', function(err) {
-    alert(err.message);
+    //alert(err.message);
     //TODO - bilgi mesajı
     //if(err.type = "invalidusername")
-    //	getUsername();
+    //getUsername();
 });
 
 //source : http://stackoverflow.com/questions/6707476/how-to-find-if-a-text-contains-url-string
@@ -146,6 +147,8 @@ function scroll() {
 }
 
 function notifyUser(message) {
+	
+	if(!isNewNotificationSupported()) return;
 	
 	//if(window_focus) return;
 	clearInterval(titleInterval);
@@ -173,6 +176,21 @@ function notifyUser(message) {
         };
         notificationStack.push(notification);
     }
+}
+
+//SOURCE : http://stackoverflow.com/questions/29774836/failed-to-construct-notification-illegal-constructor
+function isNewNotificationSupported() {
+    if (!window.Notification || !Notification.requestPermission)
+        return false;
+    if (Notification.permission == 'granted')
+        throw new Error('You must only call this *before* calling Notification.requestPermission(), otherwise this feature detect would bug the user with an actual notification!');
+    try {
+        new Notification('');
+    } catch (e) {
+        if (e.name == 'TypeError')
+            return false;
+    }
+    return true;
 }
 
 function toggleTitle(){

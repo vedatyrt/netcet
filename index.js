@@ -4,9 +4,12 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var defaultPort = 881;
-if (process.argv.indexOf("-port") != -1) {
-    var port = process.argv[process.argv.indexOf("-port") + 1];
+var database = require('./controllers/database');
+var api = require("./controllers/api")(database);
+
+var defaultPort = 880;
+if (process.argv.indexOf("--port") != -1) {
+    var port = process.argv[process.argv.indexOf("--port") + 1];
     var p = parseInt(port);
     if (!isNaN(p))
         defaultPort = p;
@@ -14,12 +17,12 @@ if (process.argv.indexOf("-port") != -1) {
 
 var path1 = __dirname + '/views/';
 
-var currentUsers = new Array;
 
 app.get('/', function(req, res) {
     res.sendFile(path1 + '/index.html');
 });
 
+app.use('/api', api);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,20 +33,18 @@ io.on('connection', function(socket) {
         io.emit('chat', msg);
     });
     socket.on('connected', function(username) {
-        if (currentUsers.indexOf(username) == -1) {
-            currentUsers.push(username);
+        if (!database.isExist("username", username)) {
+            database.add({ username: username });
             io.emit('connected', username);
         } else {
-            io.emit('error', { "type": "invalidusername", "message": "This username already taken : " + username });
+            io.emit('error', { "type": "invalidusername", "message": "Invalid username : " + username });
         }
     });
-    socket.on('byby', function(username) {
-        console.log(username + " ayrılıyor");
-        if (currentUsers.indexOf(username) != -1) {
-            removeUser(username);
-            io.emit('byby', username);
-            console.log(username + " ayrıldı");
-        }
+    socket.on('disconnected', function(username) {
+        if (database.remove("username", username)) {
+            io.emit('disconnected', username);
+            console.log(username + " disconnected");
+		}
     });
 });
 
@@ -51,17 +52,6 @@ io.on('connection', function(socket) {
 http.listen(process.env.PORT || defaultPort, function() {
     console.log('listening on *:' + defaultPort);
 });
-
-
-function removeUser(username) {
-    var newUserList = new Array;
-    for (var i = 0; i < currentUsers.length; i++) {
-        if (currentUsers[i] != username)
-            newUserList.push(currentUsers[i]);
-    }
-    currentUsers = newUserList;
-    console.log("currentUsers :" + currentUsers);
-}
 
 
 function getDate() {

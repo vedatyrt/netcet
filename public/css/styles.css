@@ -47,24 +47,32 @@ body {
     background-color: #d69282;
 }
 
-.top_menu .buttons .button.cloze:hover{
-	 background-color: #d8431f;
+.top_menu .buttons .button.cloze:hover {
+    background-color: #d8431f;
 }
 
 .top_menu .buttons .button.minimize {
     background-color: #f7c988;
 }
 
-.top_menu .buttons .button.minimize:hover{
-    background-color: #fdb755;
+.top_menu .buttons .button.minimize:hover {
+    background-color: #e09a3a;
 }
 
 .top_menu .buttons .button.maximize {
-    background-color: #b6d688;
+    background-color: #b5db7e;
 }
 
-.top_menu .buttons .button.maximize:hover{
-    background-color: #9ed84b;
+.top_menu .buttons .button.maximize:hover {
+    background-color: #8fe01b;
+}
+
+.top_menu .buttons .button.settigs {
+    background-color: #d772d6;
+}
+
+.top_menu .buttons .button.settigs:hover {
+    background-color: #de1fdc;
 }
 
 .top_menu .title {
@@ -177,25 +185,25 @@ body {
     height: 60px;
     border-radius: 50%;
     display: flex;
-	align-items: center;
-	justify-content: center;
+    align-items: center;
+    justify-content: center;
 }
 
-.username_first_letter{
-	position: relative;
+.username_first_letter {
+    position: relative;
     font-size: 50px;
-	font-family:Courier New;
+    font-family: Courier New;
 }
 
-.message_time{
-	/* position: relative; */
+.message_time {
+    /* position: relative; */
     font-size: 15px;
-	font-family:Courier New;
+    font-family: Courier New;
 }
 
-.messages .message .text_wrapper .message_time{
+.messages .message .text_wrapper .message_time {
     color: rgb(138, 109, 59);
-	float : right;
+    float: right;
 }
 
 .messages .message .text_wrapper {

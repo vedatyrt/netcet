@@ -6,15 +6,18 @@ var socket = io();
 var titleInterval;
 
 var Settings = {
-	title : ".:# NetÇet #:.",
-	showNotifications : true,
-	newMessageAlert : "New Message",
+    appName: "netçet",
+    title: "NetÇet",
+    version: "0.1",
+    showNotifications: true,
+    newMessageAlert: "New Message",
+    notificatioSupported: isNewNotificationSupported()
 }
 
 function getUsername(first) {
-	
-	//if(first)
-	var cusername = getCookie("username", null);
+
+    //if(first)
+    var cusername = getCookie("username", null);
 
     if (cusername == null) {
         while (!userInput) {
@@ -92,10 +95,10 @@ socket.on('chat', function(message) {
     }
 
     var mes = new Message({
-        text: message.msg,
+        text: replaceURLWithHTMLLinks(message.msg),
         message_side: side,
-		user : message.user,
-		date: message.date
+        user: message.user,
+        date: message.date
     });
 
     mes.draw();
@@ -115,7 +118,7 @@ socket.on('connected', function(username) {
     scroll();
 });
 
-socket.on('byby', function(username) {
+socket.on('disconnected', function(username) {
     if (username == userInput)
         return;
 
@@ -130,9 +133,6 @@ socket.on('byby', function(username) {
 
 socket.on('error', function(err) {
     //alert(err.message);
-    //TODO - bilgi mesajı
-    //if(err.type = "invalidusername")
-    //getUsername();
 });
 
 //source : http://stackoverflow.com/questions/6707476/how-to-find-if-a-text-contains-url-string
@@ -143,28 +143,31 @@ function replaceURLWithHTMLLinks(text) {
 
 function scroll() {
     $messages = $('.messages');
-    $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
+    $messages.animate({
+        scrollTop: $messages.prop('scrollHeight')
+    }, 300);
 }
 
 function notifyUser(message) {
-	
-	if(!isNewNotificationSupported()) return;
-	
-	//if(window_focus) return;
-	clearInterval(titleInterval);
-	titleInterval = setInterval(function(){ toggleTitle() }, 500);
-	
-	if(!Settings.showNotifications) return;
-		
+
+    if (!Settings.notificatioSupported) return;
+
+    //if(window_focus) return;
+    clearInterval(titleInterval);
+    titleInterval = setInterval(function() {
+        toggleTitle()
+    }, 500);
+
+    if (!Settings.showNotifications) return;
+
     if (!Notification) {
-        //alert('Desktop notifications not available in your browser. Try Chromium.');
         return;
     }
 
     if (Notification.permission !== "granted")
         Notification.requestPermission();
     else {
-        var notification = new Notification('8.80 - ' + message.user, {
+        var notification = new Notification(Settings.appName + ' - ' + message.user, {
             icon: 'https://raw.githubusercontent.com/agtokty/netcet/master/public/images/netcetlogo.PNG',
             body: message.date + " " + message.msg,
         });
@@ -180,24 +183,47 @@ function notifyUser(message) {
 
 //SOURCE : http://stackoverflow.com/questions/29774836/failed-to-construct-notification-illegal-constructor
 function isNewNotificationSupported() {
+    if (!detectmob())
+        return true;
+
     if (!window.Notification || !Notification.requestPermission)
         return false;
-	
+
     Notification.requestPermission();
+    var notification = null;
     try {
-        new Notification('');
+        notification = new Notification('');
+        notification.close();
     } catch (e) {
         if (e.name == 'TypeError')
             return false;
+    } finally {
+        if (notification && notification.close)
+            notification.close();
     }
     return true;
 }
 
-function toggleTitle(){
-	if(document.title == Settings.title)
-		document.title = Settings.newMessageAlert;
-	else
-		document.title = Settings.title;
+function detectmob() {
+    if (navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/iPhone/i) ||
+        navigator.userAgent.match(/iPad/i) ||
+        navigator.userAgent.match(/iPod/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Windows Phone/i)
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function toggleTitle() {
+    if (document.title == Settings.title)
+        document.title = Settings.newMessageAlert;
+    else
+        document.title = Settings.title;
 }
 
 function clearAllNotifications() {
@@ -206,9 +232,9 @@ function clearAllNotifications() {
             notificationStack[i].close();
         notificationStack = new Array();
     }
-	
-	clearInterval(titleInterval);
-	document.title = Settings.title
+
+    clearInterval(titleInterval);
+    document.title = Settings.title
 }
 
 var getMessageText = function() {
@@ -222,10 +248,21 @@ var clearMessageText = function() {
     return $message_input.val("");
 };
 
+
+var resizeMessages = function() {
+    $(".messages").height($(window).height() - ($(".top_menu").height() + $(".bottom_wrapper").height() + 90));
+}
+
 $(function() {
-	
-	document.title = Settings.title;
-	
+
+    resizeMessages()
+
+    window.onresize = function(event) {
+        resizeMessages()
+    };
+
+    document.title = Settings.title;
+
     window.onblur = function() {
         window_focus = false;
     }
@@ -236,7 +273,7 @@ $(function() {
     }
 
     window.onbeforeunload = function() {
-        socket.emit('byby', userInput);
+        socket.emit('disconnected', userInput);
     }
 
     getUsername();

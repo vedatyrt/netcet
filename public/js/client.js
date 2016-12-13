@@ -3,6 +3,14 @@ var window_focus = true;
 var notificationStack = new Array;
 var socket = io();
 
+var titleInterval;
+
+var Settings = {
+	title : ".:# NetÇet #:.",
+	showNotifications : true,
+	newMessageAlert : "New Message",
+}
+
 function getUsername() {
 
     var cusername = getCookie("username", null);
@@ -76,8 +84,6 @@ $('form').submit(function() {
 });
 
 socket.on('chat', function(message) {
-
-    //TODO -- MESSAJI EKLE
     var side = "right";
     if (message.user != userInput) {
         side = "left"
@@ -86,7 +92,9 @@ socket.on('chat', function(message) {
 
     var mes = new Message({
         text: message.msg,
-        message_side: side
+        message_side: side,
+		user : message.user,
+		date: message.date
     });
 
     mes.draw();
@@ -94,8 +102,6 @@ socket.on('chat', function(message) {
 });
 
 socket.on('connected', function(username) {
-    //TODO - xxx kişisi bağlandı
-
     if (username == userInput)
         return;
 
@@ -109,8 +115,6 @@ socket.on('connected', function(username) {
 });
 
 socket.on('byby', function(username) {
-    //    if (username != userInput)
-    //TODO - xxx kişisi kotu gitti
     if (username == userInput)
         return;
 
@@ -137,15 +141,20 @@ function replaceURLWithHTMLLinks(text) {
 }
 
 function scroll() {
-    //TODO
     $messages = $('.messages');
     $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
 }
 
 function notifyUser(message) {
-
+	
+	//if(window_focus) return;
+	clearInterval(titleInterval);
+	titleInterval = setInterval(function(){ toggleTitle() }, 500);
+	
+	if(!Settings.showNotifications) return;
+		
     if (!Notification) {
-        alert('Desktop notifications not available in your browser. Try Chromium.');
+        //alert('Desktop notifications not available in your browser. Try Chromium.');
         return;
     }
 
@@ -166,12 +175,22 @@ function notifyUser(message) {
     }
 }
 
+function toggleTitle(){
+	if(document.title == Settings.title)
+		document.title = Settings.newMessageAlert;
+	else
+		document.title = Settings.title;
+}
+
 function clearAllNotifications() {
     if (notificationStack.length > 0) {
         for (var i = 0; i < notificationStack.length; i++)
             notificationStack[i].close();
         notificationStack = new Array();
     }
+	
+	clearInterval(titleInterval);
+	document.title = Settings.title
 }
 
 var getMessageText = function() {
@@ -186,7 +205,9 @@ var clearMessageText = function() {
 };
 
 $(function() {
-
+	
+	document.title = Settings.title;
+	
     window.onblur = function() {
         window_focus = false;
     }

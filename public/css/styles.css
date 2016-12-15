@@ -29,12 +29,12 @@ body {
     box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
 }
 
-.top_menu .buttons {
+.buttons {
     margin: 3px 0 0 20px;
     position: absolute;
 }
 
-.top_menu .buttons .button {
+.button {
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -43,35 +43,35 @@ body {
     position: relative;
 }
 
-.top_menu .buttons .button.cloze {
+.cloze {
     background-color: #d69282;
 }
 
-.top_menu .buttons .button.cloze:hover {
+.cloze:hover {
     background-color: #d8431f;
 }
 
-.top_menu .buttons .button.minimize {
+.minimize {
     background-color: #f7c988;
 }
 
-.top_menu .buttons .button.minimize:hover {
+.minimize:hover {
     background-color: #e09a3a;
 }
 
-.top_menu .buttons .button.maximize {
+.maximize {
     background-color: #b5db7e;
 }
 
-.top_menu .buttons .button.maximize:hover {
+.maximize:hover {
     background-color: #8fe01b;
 }
 
-.top_menu .buttons .button.settigs {
+.settigs {
     background-color: #d772d6;
 }
 
-.top_menu .buttons .button.settigs:hover {
+.settigs:hover {
     background-color: #de1fdc;
 }
 
@@ -273,7 +273,6 @@ body {
 .bottom_wrapper .send_message {
     width: 100px;
     height: 50px;
-    display: inline-block;
     border-radius: 30px;
     background-color: #a3d063;
     border: 2px solid #a3d063;
@@ -302,4 +301,41 @@ body {
 
 .info_message_template {
     display: none;
+}
+
+
+
+/*MODOL*/
+.modal-header .settings-header{
+        width: 100%;
+}
+
+.settings-header .settings-title{
+    color: #bcbdc0;
+    font-size: 18px;
+    text-align: center;
+}
+
+.settings-header .modol-header-buttons{
+    float: left;
+    position: absolute;
+}
+
+.setting-all{
+
+}
+
+.settigs-single{
+    margin: 10px;
+    padding-bottom: 10px;
+}
+
+.settigs-single-desc{
+    color: #d8431f;
+    display: inline;
+}
+
+.settigs-single-value{
+    display: inline;
+    float: right;
 }

@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="js/chat.js"></script>
 </head>
@@ -17,7 +19,7 @@
                 <div class="button cloze" title="close"></div>
                 <div class="button minimize" title="minimize"></div>
                 <div class="button maximize" title="maximize"></div>
-                <div class="button settigs" title="settigs"></div>
+                <div id="btnSettings" class="button settigs" title="settigs"></div>
             </div>
             <div class="title">NetÇet v0.1</div>
         </div>
@@ -25,7 +27,9 @@
             <ul class="messages"></ul>
         </div>
         <div class="bottom_wrapper clearfix">
-            <div class="message_input_wrapper"><input class="message_input" placeholder="Type your message here..." /></div>
+            <div class="message_input_wrapper">
+                <input class="message_input" placeholder="Type your message here..." />
+            </div>
             <div class="send_message">
                 <div class="icon"></div>
                 <div class="text">Send</div>
@@ -52,6 +56,40 @@
             </div>
         </li>
     </div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="settings-header">
+                        <div class="modol-header-buttons">
+                            <div type="button" class="button cloze" title="close" data-dismiss="modal"></div>
+                        </div>
+                        <div class="settings-title">Settings</div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-all">
+                        <div class="settigs-single">
+                            <div class="settigs-single-desc">Show Notifications</div>
+                            <div class="settigs-single-value"><input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"></div>
+                        </div>
+                        <div class="settigs-single">
+                            <div class="settigs-single-desc">Show Notifications2</div>
+                            <div class="settigs-single-value"><input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"></div>
+                        </div>
+                        <div class="settigs-single">
+                            <div class="settigs-single-desc">Show Notifications4</div>
+                            <div class="settigs-single-value"><input type="checkbox"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/client.js"></script>

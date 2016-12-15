@@ -5,6 +5,8 @@ var socket = io();
 
 var titleInterval;
 
+var COOKIE_NAME_USERNAME = "ncusername";
+
 var Settings = {
     appName: "netçet",
     title: "NetÇet",
@@ -17,13 +19,13 @@ var Settings = {
 function getUsername(first) {
 
     //if(first)
-    var cusername = getCookie("username", null);
+    var cusername = getCookie(COOKIE_NAME_USERNAME, null);
 
     if (cusername == null) {
         while (!userInput) {
             userInput = window.prompt("Enter Your Username ", "");
         }
-        setCookie("username", userInput, 7);
+        setCookie(COOKIE_NAME_USERNAME, userInput, 7);
     } else
         userInput = cusername;
     socket.emit('connected', userInput);
@@ -75,17 +77,17 @@ $('.message_input').keyup(function(e) {
     }
 });
 
-$('form').submit(function() {
-    if ($('#m').val()) {
-        var message = {
-            "user": userInput,
-            msg: $('#m').val(),
-        };
-        socket.emit('chat', message);
-        $('#m').val('');
-    }
-    return false;
-});
+// $('form').submit(function() {
+//     if ($('#m').val()) {
+//         var message = {
+//             "user": userInput,
+//             msg: $('#m').val(),
+//         };
+//         socket.emit('chat', message);
+//         $('#m').val('');
+//     }
+//     return false;
+// });
 
 socket.on('chat', function(message) {
     var side = "right";
@@ -280,5 +282,9 @@ $(function() {
 
     if (Notification.permission !== "granted")
         Notification.requestPermission();
+
+    $("#btnSettings").on("click",function(){
+        $('#myModal').modal('show'); 
+    })
 
 });

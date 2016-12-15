@@ -255,12 +255,14 @@ body {
     height: 50px;
     border-radius: 25px;
     border: 1px solid #bcbdc0;
-    width: calc(100% - 110px);
+    /*width: calc(100% - 110px); hide send button*/
+    width: 100%;
     position: relative;
     padding: 0 20px;
 }
 
 .bottom_wrapper .message_input_wrapper .message_input {
+    /*hide send button*/
     border: none;
     height: 100%;
     box-sizing: border-box;
@@ -271,6 +273,7 @@ body {
 }
 
 .bottom_wrapper .send_message {
+    display: none;
     width: 100px;
     height: 50px;
     border-radius: 30px;
@@ -304,38 +307,68 @@ body {
 }
 
 
-
 /*MODOL*/
-.modal-header .settings-header{
-        width: 100%;
+
+.modal-header .settings-header {
+    width: 100%;
 }
 
-.settings-header .settings-title{
+.settings-header .settings-title {
     color: #bcbdc0;
     font-size: 18px;
     text-align: center;
 }
 
-.settings-header .modol-header-buttons{
+.settings-header .modol-header-buttons {
     float: left;
     position: absolute;
 }
 
-.setting-all{
+.setting-all {}
 
-}
-
-.settigs-single{
+.settigs-single {
     margin: 10px;
     padding-bottom: 10px;
 }
 
-.settigs-single-desc{
+.settigs-single-desc {
     color: #d8431f;
     display: inline;
 }
 
-.settigs-single-value{
+.settigs-single-value {
     display: inline;
     float: right;
+}
+
+
+/* .modal-login */
+
+.modal-fullscreen .modal-content {
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.modal-backdrop.modal-backdrop-fullscreen {
+    background: #ffffff;
+}
+
+.modal-backdrop.modal-backdrop-fullscreen.in {
+    opacity: 1;
+}
+
+.modal-fullscreen .modal-dialog {
+    margin: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+}
+
+.modal-fullscreen modal-body {
+    background-color: #f8f8f8;
+}
+
+.modal-fullscreen .modal-header {
+    padding: 0px;
 }

@@ -253,6 +253,8 @@ var clearMessageText = function() {
 
 var resizeMessages = function() {
     $(".messages").height($(window).height() - ($(".top_menu").height() + $(".bottom_wrapper").height() + 90));
+
+    $("#login-modal-body").height($(window).height());
 }
 
 $(function() {
@@ -283,8 +285,12 @@ $(function() {
     if (Notification.permission !== "granted")
         Notification.requestPermission();
 
-    $("#btnSettings").on("click",function(){
-        $('#myModal').modal('show'); 
-    })
+    $("#btnSettings").on("click", function() {
+        $('#myModal').modal('show');
+    });
+
+    // $("#btnSettings").on("click", function() {
+    $('#loginModol').modal('show');
+    // })
 
 });

@@ -365,7 +365,7 @@ body {
     width: 100%;
 }
 
-.modal-fullscreen modal-body {
+.modal-fullscreen .modal-body {
     background-color: #f8f8f8;
 }
 

@@ -16,19 +16,22 @@ var Settings = {
     notificatioSupported: isNewNotificationSupported()
 }
 
-function getUsername(first) {
+function sayWelcome() {
+    var welcomeMessage = new Message({
+        text: "Welcome " + userInput,
+        message_side: "info",
+        user: userInput,
+        date: getDate()
+    });
+    welcomeMessage.draw();
+}
 
-    //if(first)
-    var cusername = getCookie(COOKIE_NAME_USERNAME, null);
-
-    if (cusername == null) {
-        while (!userInput) {
-            userInput = window.prompt("Enter Your Username ", "");
-        }
-        setCookie(COOKIE_NAME_USERNAME, userInput, 7);
-    } else
-        userInput = cusername;
-    socket.emit('connected', userInput);
+function getDate() {
+    var d = new Date();
+    var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    var m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+    var s = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+    return h + ":" + m + ":" + s;
 }
 
 function getCookie(cname, defaultValue) {
@@ -47,10 +50,20 @@ function getCookie(cname, defaultValue) {
 }
 
 function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
+    if(!exdays)
+		exdays = 7;
+	var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function deleteCookie(cname){
+	 document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function clearMessages(){
+	$(".messages").empty();
 }
 
 $('.send_message').click(function(e) {
@@ -76,18 +89,6 @@ $('.message_input').keyup(function(e) {
         clearMessageText();
     }
 });
-
-// $('form').submit(function() {
-//     if ($('#m').val()) {
-//         var message = {
-//             "user": userInput,
-//             msg: $('#m').val(),
-//         };
-//         socket.emit('chat', message);
-//         $('#m').val('');
-//     }
-//     return false;
-// });
 
 socket.on('chat', function(message) {
     var side = "right";
@@ -250,17 +251,16 @@ var clearMessageText = function() {
     return $message_input.val("");
 };
 
-
 var resizeMessages = function() {
-    $(".messages").height($(window).height() - ($(".top_menu").height() + $(".bottom_wrapper").height() + 90));
+	$(".messages").height($(window).height() - ($(".top_menu").height() + $(".bottom_wrapper").height() + 90));
 
-    $("#login-modal-body").height($(window).height());
+    $("#login-modal-content").height($(window).height());
+    $("#login-modal-body").height($(window).height() - (94) );
+    //$("#login-modal-body").height($(window).height() );
 }
 
 $(function() {
-
-    resizeMessages()
-
+ 
     window.onresize = function(event) {
         resizeMessages()
     };
@@ -279,18 +279,44 @@ $(function() {
     window.onbeforeunload = function() {
         socket.emit('disconnected', userInput);
     }
-
-    getUsername();
-
-    if (Notification.permission !== "granted")
-        Notification.requestPermission();
-
+	
+	var cusername = getCookie(COOKIE_NAME_USERNAME, null);
+	if (cusername == null){
+		$('#loginModol').modal('show');
+		$("#btnEnter").on("click",function(){
+			var username = $("#username").val();
+			if(username){
+				setCookie(COOKIE_NAME_USERNAME, username, 7);
+				$('#loginModol').modal('hide');
+				socket.connect(); 
+				socket.emit('connected', username);
+				userInput = username;
+				sayWelcome();
+			}else{
+				console.log("enter valid username");
+			}
+		});
+	}else{
+		userInput = cusername;
+		if (Notification.permission !== "granted")
+			Notification.requestPermission();
+		sayWelcome();
+		socket.emit('connected', userInput);
+	}
+    
+	
     $("#btnSettings").on("click", function() {
         $('#myModal').modal('show');
     });
-
-    // $("#btnSettings").on("click", function() {
-    $('#loginModol').modal('show');
-    // })
-
+	
+	$("#btnLogout").on("click", function() {
+		socket.emit('disconnected', userInput);
+		socket.disconnect(); 
+		deleteCookie(COOKIE_NAME_USERNAME);
+		userInput = null;
+        $('#loginModol').modal('show');
+		clearMessages();
+    });
+	
+	resizeMessages();
 });

@@ -16,7 +16,7 @@
     <div class="chat_window">
         <div class="top_menu">
             <div class="buttons">
-                <div class="button cloze" title="close"></div>
+                <div id="btnLogout" class="button cloze" title="logout"></div>
                 <div class="button minimize" title="minimize"></div>
                 <div class="button maximize" title="maximize"></div>
                 <div id="btnSettings" class="button settigs" title="settigs"></div>
@@ -89,43 +89,43 @@
     </div>
     <div class="modal modal-fullscreen fade" id="loginModol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="login-modal-body">
-                <div class="modal-header">
+            <div class="modal-content" id="login-modal-content">
+                <div class="modal-header" id="login-modal-header">
                     <div class="top_menu">
                         <!--<h4 class="modal-title" id="myModalLabel">Login Page</h4>-->
                         <div class="title">NetÇet v0.1</div>
                     </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="login-modal-body">
                     <div class="row">
                         <div class="center-block" style="width:315px">
                             <div class="well">
-                                <form id="loginForm" method="POST" action="/login/" novalidate="novalidate">
+                                <form id="loginForm" novalidate="novalidate" onkeypress="return event.keyCode != 13;">
                                     <div class="form-group">
                                         <label for="username" class="control-label">Username</label>
                                         <input type="text" class="form-control" id="username" name="username" value="" required="" title="Please enter you username" placeholder="example@gmail.com">
                                         <span class="help-block"></span>
                                     </div>
-                                    <div class="form-group">
+<!--                                     <div class="form-group">
                                         <label for="password" class="control-label">Password</label>
                                         <input type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
                                         <span class="help-block"></span>
-                                    </div>
+                                    </div> -->
                                     <div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
                                     <div class="checkbox">
-                                        <label>
-                                      <input type="checkbox" name="remember" id="remember"> Remember login
+                                    <label>
+                                      <input type="checkbox" name="remember" id="remember"> Remember me
                                     </label>
-                                        <p class="help-block">(if this is a private computer)</p>
+                                    <!-- <p class="help-block">(if this is a private computer)</p> -->
                                     </div>
-                                    <button type="submit" class="btn btn-success btn-block">Login</button>
+                                    <button id="btnEnter" type="button" class="btn btn-success btn-block">Enter</button>
                                     <!--<a href="/forgot/" class="btn btn-default btn-block">Help to login</a>-->
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="display:none;">
                     <!--<button type="button" class="btn btn-default" data-dismiss="modal">Login</button>-->
                 </div>
             </div>

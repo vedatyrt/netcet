@@ -55,8 +55,8 @@
             </div>
         </li>
     </div>
-		
-	<div class="modal fade" id="myModal" role="dialog">
+
+    <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -71,9 +71,9 @@
                     <div class="setting-all">
                         <div class="settigs-single">
                             <div class="settigs-single-desc">Show Notifications</div>
-                            <div class="settigs-single-value"><input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"></div>
+                            <div class="settigs-single-value"><input type="checkbox" id="showNotification" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"></div>
                         </div>
-<!--                         <div class="settigs-single">
+                        <!--                         <div class="settigs-single">
                             <div class="settigs-single-desc">Show Notifications2</div>
                             <div class="settigs-single-value"><input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"></div>
                         </div>
@@ -106,17 +106,17 @@
                                         <input type="text" class="form-control" id="username" name="username" value="" required="" title="Please enter you username" placeholder="example@gmail.com">
                                         <span class="help-block"></span>
                                     </div>
-<!--                                     <div class="form-group">
+                                    <!--                                     <div class="form-group">
                                         <label for="password" class="control-label">Password</label>
                                         <input type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
                                         <span class="help-block"></span>
                                     </div> -->
                                     <div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
                                     <div class="checkbox">
-                                    <label>
+                                        <label>
                                       <input type="checkbox" name="remember" id="remember"> Remember me
                                     </label>
-                                    <!-- <p class="help-block">(if this is a private computer)</p> -->
+                                        <!-- <p class="help-block">(if this is a private computer)</p> -->
                                     </div>
                                     <button id="btnEnter" type="button" class="btn btn-success btn-block">Enter</button>
                                     <!--<a href="/forgot/" class="btn btn-default btn-block">Help to login</a>-->
@@ -131,8 +131,8 @@
             </div>
         </div>
     </div>
-	
-	<div class="modal fade" id="onlineUsersModol" role="dialog">
+
+    <div class="modal fade" id="onlineUsersModol" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -144,35 +144,37 @@
                     </div>
                 </div>
                 <div class="modal-body">
-					<div id="onlineUserList">
-					    <div class="row">
-							<div class="col-lg-12">
-								<div class="main-box no-header clearfix">
-									<div class="main-box-body clearfix">
-										<div class="table-responsive">
-											<table class="table user-list">
-												<thead>
-													<tr>
-													<th><span>Username</span></th>
-													<th><span>Login At</span></th>
-													<th class="text-center"><span>Status</span></th>
-													</tr>
-												</thead>
-												<tbody id="onlineUserListTableBody">
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    <div id="onlineUserList">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="main-box no-header clearfix">
+                                    <div class="main-box-body clearfix">
+                                        <div class="table-responsive">
+                                            <table class="table user-list">
+                                                <thead>
+                                                    <tr>
+                                                        <th><span>Username</span></th>
+                                                        <th><span>Login At</span></th>
+                                                        <th class="text-center"><span>Status</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="onlineUserListTableBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-	
+
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/client.js"></script>
 </body>
 

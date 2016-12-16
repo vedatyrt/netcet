@@ -35,3 +35,38 @@ Message = function(arg) {
     }(this);
     return this;
 };
+
+var SingleUser;
+SingleUser = function(arg) {
+    this.username = arg.username;
+    this.logindate = arg.logindate;
+    this.color = arg.color;
+    this.addOnlineUserTable = function(_this) {
+        return function() {
+
+			var $row = $("<tr>", {"class": "a","username" : _this.username});
+			var $tdusername = $("<td>", {"class": "a"}).html('<span class="user-subhead">'+_this.username+'</span>');
+			var $tdlogindate = $("<td>", {"class": "user-logindate"}).text(_this.logindate);
+			var $tdstatus = $("<td>", {"class": "text-center"}).html('<span class="label label-success">online</span>');
+			
+			$row.append($tdusername);
+			$row.append($tdlogindate);
+			$row.append($tdstatus);
+
+            var letter = "...";
+            if (this.username) {
+                letter = this.username.charAt(0).toUpperCase()
+            }
+
+            $('#onlineUserListTableBody').append($row);
+
+        };
+    }(this);
+	this.removeFromUserTable = function(_this){
+		return function() {
+			$("#onlineUserListTableBody").find("[username='" + _this.username + "']").remove();
+			//console.log("remove : " + _this.username);
+		};
+	}(this);
+    return this;
+};

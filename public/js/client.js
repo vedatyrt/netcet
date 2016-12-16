@@ -116,9 +116,15 @@ socket.on('connected', function(username) {
         text: username + " connected",
         message_side: "info"
     });
-
-    info.draw();
+	info.draw();
     scroll();
+	
+	var user = SingleUser({
+		username : username,
+		logindate : getDate(),
+	});
+	user.addOnlineUserTable();
+	
 });
 
 socket.on('disconnected', function(username) {
@@ -132,6 +138,9 @@ socket.on('disconnected', function(username) {
 
     info.draw();
     scroll();
+	
+	var user = SingleUser({username : username});
+	user.removeFromUserTable();
 });
 
 socket.on('error', function(err) {
@@ -182,6 +191,32 @@ function notifyUser(message) {
         };
         notificationStack.push(notification);
     }
+}
+
+function getOnlineUsers(){
+	var url = "http://192.168.1.98:882/api/users";
+	$.ajax({
+		url: url,
+		dataType: 'json',
+		success: function( data ) {
+			if(data && data.length > 0){
+				$("#onlineUserListTableBody").empty();
+				for(var i = 0; i< data.length; i++){
+					var user = SingleUser({
+						username : data[i].username,
+						logindate : getDate(),
+					});
+					user.addOnlineUserTable();
+				}
+			}else{
+				
+			}
+		  //console.log(data);
+		},
+		error: function( data ) {
+		  console.log(data);
+		}
+	});	
 }
 
 //SOURCE : http://stackoverflow.com/questions/29774836/failed-to-construct-notification-illegal-constructor
@@ -307,6 +342,11 @@ $(function() {
 	
     $("#btnSettings").on("click", function() {
         $('#myModal').modal('show');
+    });
+	
+	$("#whoisonline").on("click", function() {
+        $('#onlineUsersModol').modal('show');
+		getOnlineUsers();
     });
 	
 	$("#btnLogout").on("click", function() {
